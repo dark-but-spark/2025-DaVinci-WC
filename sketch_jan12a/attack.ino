@@ -22,6 +22,7 @@ void motor2(int x);
 void motor3(int x);
 void motor4(int x);
 //舵机的180~输入的100
+void printIn()
 void setup() {
   // put your setup code here, to run once:
    
