@@ -1,3 +1,5 @@
+#include<PS2X_lib.h>
+
 
 
 double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127的数字
