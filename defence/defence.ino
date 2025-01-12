@@ -14,13 +14,6 @@ double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~1
   if(x>80) return (x-80)*40.0/47.0+60;//(80,60) (127,100)
 
 }
-void init()
-{
-  digitalWrite(4,LOW);
-  analogWrite(5, 0);
-  digitalWrite(7,LOW);
-  analogWrite(6, 0);
-}
 /*
 void up(int x)//向前单位
 {
@@ -76,13 +69,11 @@ void move(int A,int B)//移动上下左右总和
 }
 void gofront()//炮台向前
 {
-  if(x<10) return;
   item=item+5<150? item+5:150;
   servo_9.write(item);
 }
 void goback()//炮台向后
 {
-  if(x<10) return;
   item=item-5>50? item-5:50;
   servo_9.write(item);
 }
@@ -106,7 +97,10 @@ void setup() {
   //50~150 舵机角度 50竖直 135水平
   item=135;
   servo_9.write(item);//初始化防御位置
-  init();
+    digitalWrite(4,LOW);
+  analogWrite(5, 0);
+  digitalWrite(7,LOW);
+  analogWrite(6, 0);
   Serial.println("初始条件完成");
 
 }
