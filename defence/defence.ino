@@ -6,10 +6,11 @@ PS2X ps2x;
 Servo servo_9;
 volatile int item;
 
-int move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127的数字
+double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127的数字
 {
+  return map(x, 0, 127, 0, 255);
   if(x<10) return 0;
-  else return (x-10)*100.0/117.0;
+  else return (x-10)*127.0/117.0;
 /*
   if(x<10) return 0;
   if(x<20) return x-10;
@@ -18,30 +19,35 @@ int move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127�
 */
 
 }
-
-void move(int A,int B)//移动上下左右总和
+void up(int x)//向前单位
 {
-  if(A>=0)
-  {
-    digitalWrite(4,HIGH);
-    analogWrite(5,A);
-  }
-  else
-  {
-    digitalWrite(4,LOW);
-    analogWrite(5,-A);
-  }
-  if(A>=0)
-  {
-    digitalWrite(7,HIGH);
-    analogWrite(6,B);
-  }
-  else
-  {
-    digitalWrite(7,LOW);
-    analogWrite(6,-B);
-  }
+  digitalWrite(4,LOW);
+  analogWrite(5,x);
+  digitalWrite(7,LOW);
+  analogWrite(6,x);
 }
+void down(int x)//向后单位
+{
+  digitalWrite(4,HIGH);
+  analogWrite(5,x);
+  digitalWrite(7,HIGH);
+  analogWrite(6,x);
+}
+void left(int x)//左转 a后b前
+{
+  digitalWrite(4,HIGH);
+  analogWrite(5,255-x);
+  digitalWrite(7,LOW);
+  analogWrite(6,x);
+}
+void right(int x)//右转 a前b后
+{
+  digitalWrite(4,LOW);
+  analogWrite(5,x);
+  digitalWrite(7,HIGH);
+  analogWrite(6,255-x);
+}
+
 void gofront()//炮台向前
 {
   item=item+5<150? item+5:150;
@@ -77,145 +83,96 @@ void setup() {
   digitalWrite(7,LOW);
   analogWrite(6, 0);
   Serial.println("初始条件完成");
-
+  up(100);delay(1000);
+  right(100);delay(1000);
+  down(100);delay(2000);
+  left(100);delay(1000);
 }
 
 void loop() {
-//   // put your main code here, to run repeatedly:
-//   //激光灯测试代码
-//   /*
-//   digitalWrite(10,HIGH);
-//   delay(1000);
-//   digitalWrite(10,LOW);
-//   delay(1000);
-//   */
-//   //------
-//   ps2x.read_gamepad(false, 0);
-//     delay(30);
-  
-//   // Serial.println("手柄");
-//   // Serial.println(ps2x.Analog(PSS_LX));
-//   // Serial.println(ps2x.Analog(PSS_LY));
-//   digitalWrite(4,LOW);
-//   analogWrite(5, 0);
-//   digitalWrite(7,LOW);
-//   analogWrite(6, 0);
-//   int A=0,B=0;
-//   if(ps2x.Analog(PSS_LY)>=128)
-//   {
-//     A-=move_f(ps2x.Analog(PSS_LY)-128);
-//     B-=move_f(ps2x.Analog(PSS_LY)-128);
-//     // up(int(move_f(ps2x.Analog(PSS_LY)-128)));
-//   }
-//   else
-//   {
-//     A+=move_f(128-ps2x.Analog(PSS_LY));
-//     B+=move_f(128-ps2x.Analog(PSS_LY));
-//     // down(int(move_f(128-ps2x.Analog(PSS_LY))));
-//   }
-//   if(ps2x.Analog(PSS_LX)>=128)
-//   {
-//     A+=move_f(ps2x.Analog(PSS_LX)-128);
-//     B-=move_f(ps2x.Analog(PSS_LX)-128);
-//     // right(int(move_f(ps2x.Analog(PSS_LX)-128)));
-//   }
-//   else
-//   {
-//     A-=move_f(128-ps2x.Analog(PSS_LX));
-//     B+=move_f(128-ps2x.Analog(PSS_LX));
-//     // left(int(move-f(128-ps2x.Analog(PSS_LX))));
-//   }
-//   // A=move_f(ps2x.Analog(PSS_LY)-128)+move_f(ps2x.Analog(PSS_LX)-128);
-//   // B=move_f(ps2x.Analog(PSS_LY)-128)-move_f(ps2x.Analog(PSS_LX)-128);
-  
-// //  Serial.println("AB");
-// //  Serial.println(A);
-// // Serial.println(B);
-//   move(int (A),int (B));
-//   if(ps2x.Analog(PSS_RY) > 130)
-//   {
-//     gofront();
-//   }
-//   else if(ps2x.Analog(PSS_RY)<125)
-//   {
-//     goback();
-//   }
+  // put your main code here, to run repeatedly:
+  //激光灯测试代码
+  /*
+  digitalWrite(10,HIGH);
+  delay(1000);
+  digitalWrite(10,LOW);
+  delay(1000);
+  */
+  //------
   ps2x.read_gamepad(false, 0);
     delay(30);
-  Serial.println(ps2x.Analog(PSS_LX));
-  if ( ps2x.Analog(PSS_LY) < 125) {
-    digitalWrite(4,HIGH);
-    analogWrite(5, (map(ps2x.Analog(PSS_LY), 0, 125, 0, 255)));
-    digitalWrite(7,HIGH);
-    analogWrite(6, (map(ps2x.Analog(PSS_LY), 0, 125, 0, 255)));
-
-  } else if ( ps2x.Analog(PSS_LY) > 130) {
-    digitalWrite(4,LOW);
-    analogWrite(5, (map(ps2x.Analog(PSS_LY), 130, 255, 0, 255)));
-    digitalWrite(7,LOW);
-    analogWrite(6, (map(ps2x.Analog(PSS_LY), 130, 255, 0, 255)));
-  } else if ( ps2x.Analog(PSS_LX) < 125) {
-    digitalWrite(4,HIGH);
-    analogWrite(5, (map(ps2x.Analog(PSS_LX), 0, 125, 0, 255)));
-    digitalWrite(7,LOW);
-    analogWrite(6, (map(ps2x.Analog(PSS_LX), 0, 125, 255, 0)));
-  } else if ( ps2x.Analog(PSS_LX) > 130) {
-    digitalWrite(4,LOW);
-    analogWrite(5, (map(ps2x.Analog(PSS_LX), 130, 255, 0, 255)));
-    digitalWrite(7,HIGH);
-    analogWrite(6, (map(ps2x.Analog(PSS_LX), 130, 255, 255, 0)));
-  } else if ( ps2x.Analog(PSS_RY) > 130) {
-    item = item + 5;
-    // 100-180
-    servo_9.write(item);
-    if (item > 180) {
-      item = 180;
-
-    }
-  } else if ( ps2x.Analog(PSS_RY) < 125) {
-    item = item - 5;
-    // 100-180
-    servo_9.write(item);
-    if (item < 50) {
-      item = 50;
-
-    }
-  } else {
-    digitalWrite(4,LOW);
-    analogWrite(5, 0);
-    digitalWrite(7,LOW);
-    analogWrite(6, 0);
-
+  
+  // Serial.println("手柄");
+  // Serial.println(ps2x.Analog(PSS_LX));
+  // Serial.println(ps2x.Analog(PSS_LY));
+  digitalWrite(4,LOW);
+  analogWrite(5, 0);
+  digitalWrite(7,LOW);
+  analogWrite(6, 0);
+  // double A=0,B=0;
+  if(ps2x.Analog(PSS_LY)>130 && abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
+  {
+    // A+=move_f(ps2x.Analog(PSS_LY)-128);
+    // B+=move_f(ps2x.Analog(PSS_LY)-128);
+    down(map(ps2x.Analog(PSS_LY), 130, 255, 0, 255));
+  }
+  else if(ps2x.Analog(PSS_LY)<125&& abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
+  {
+    // A-=move_f(128-ps2x.Analog(PSS_LY));
+    // B-=move_f(128-ps2x.Analog(PSS_LY));
+    up(map(ps2x.Analog(PSS_LY), 0, 125, 0, 255));
+  }
+  else if(ps2x.Analog(PSS_LX)>130)
+  {
+    // A-=move_f(ps2x.Analog(PSS_LX)-128);
+    // B+=move_f(ps2x.Analog(PSS_LX)-128);
+      right(map(ps2x.Analog(PSS_LX), 130, 255, 0, 255));
+  }
+  else if(ps2x.Analog(PSS_LX)<125)
+  {
+    // A+=move_f(128-ps2x.Analog(PSS_LX));
+    // B-=move_f(128-ps2x.Analog(PSS_LX));
+    left(map(ps2x.Analog(PSS_LX), 0, 125, 0, 255));
+  }
+  // A=move_f(ps2x.Analog(PSS_LY)-128)+move_f(ps2x.Analog(PSS_LX)-128);
+  // B=move_f(ps2x.Analog(PSS_LY)-128)-move_f(ps2x.Analog(PSS_LX)-128);
+  
+//  Serial.println("AB");
+//  Serial.println(A);
+// Serial.println(B);
+  // move(int (A/(abs(A)+abs(B))*100),int (B/(abs(A)+abs(B))*100));
+  if(ps2x.Analog(PSS_RY) > 130)
+  {
+    gofront();
+  }
+  else if(ps2x.Analog(PSS_RY)<125)
+  {
+    goback();
   }
   
 }
 /*
-void up(int x)//向前单位
+void move(int A,int B)//移动上下左右总和
 {
-  digitalWrite(4,HIGH);
-  analogWrite(5,x);
-  digitalWrite(7,HIGH);
-  analogWrite(6,x);
-}
-void down(int x)//向后单位
-{
-  digitalWrite(4,LOW);
-  analogWrite(5,x);
-  digitalWrite(7,LOW);
-  analogWrite(6,x);
-}
-void left(int x)//左转 a后b前
-{
-  digitalWrite(4,LOW);
-  analogWrite(5,x);
-  digitalWrite(7,HIGH);
-  analogWrite(6,x);
-}
-void right(int x)//右转 a前b后
-{
-  digitalWrite(4,HIGH);
-  analogWrite(5,x);
-  digitalWrite(7,LOW);
-  analogWrite(6,x);
+  if(A>=0)
+  {
+    digitalWrite(4,HIGH);
+    analogWrite(5,A);
+  }
+  else
+  {
+    digitalWrite(4,LOW);
+    analogWrite(5,-A);
+  }
+  if(A>=0)
+  {
+    digitalWrite(7,HIGH);
+    analogWrite(6,B);
+  }
+  else
+  {
+    digitalWrite(7,LOW);
+    analogWrite(6,-B);
+  }
 }
 */

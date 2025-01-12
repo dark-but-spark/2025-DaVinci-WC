@@ -70,6 +70,9 @@ void loop(){
     delay(1000);
     // 90-180
     servo_10.write(100);
+    delay(1000);
+    digitalWrite(11,LOw);
+    servo_10.write(180);
   } else {
     digitalWrite(4,LOW);
     analogWrite(5, 0);
