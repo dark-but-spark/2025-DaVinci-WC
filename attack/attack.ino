@@ -1,4 +1,5 @@
 #include<PS2X_lib.h>
+#include<Servo.h>
 
 
 
@@ -25,7 +26,22 @@ void motor4(int x);
 void printIn()
 void setup() {
   // put your setup code here, to run once:
-   
+  s2x.config_gamepad(A5,A3,A4,A2, true, true);
+  delay(300);
+
+  pinMode(4, OUTPUT);//A电机正反转
+  pinMode(5, OUTPUT);//A电机转速
+  pinMode(7, OUTPUT);//B电机转速
+  pinMode(6, OUTPUT);//B电机正反转
+  servo_9.attach(9);//上下移动的舵机
+  pinMode(11, OUTPUT);//
+  servo_10.attach(10);
+
+  item = 180;
+  // 100-180
+  servo_9.write(item);
+  // 90-180
+  servo_10.write(180);
 }
 
 void loop() {
