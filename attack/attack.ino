@@ -3,7 +3,7 @@
 
 
 PS2X ps2x;
-Servo servo_9,servo_10;
+Servo servo_9,servo_8;
 volatile int item;
 
 double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127的数字
@@ -48,12 +48,12 @@ void right(int x)//右转 a前b后 255最快
   analogWrite(6,255-x);
 }
 
-void gofront()//炮台向前
+void goback()//炮台向后
 {
   item=item+5<150? item+5:150;
   servo_9.write(item);
 }
-void goback()//炮台向后
+void gofront()//炮台向前
 {
   item=item-5>50? item-5:50;
   servo_9.write(item);
@@ -74,14 +74,15 @@ void setup() {
   pinMode(7, OUTPUT);//B电机转速
   pinMode(6, OUTPUT);//B电机正反转
   servo_9.attach(9);//上下移动的舵机
- // pinMode(10,OUTPUT);//激光灯 测试用
-  servo_10.attach(10);//板机用
+  pinMode(10,OUTPUT);//激光灯
+  servo_8.attach(8);//板机用
   pinMode(11,OUTPUT);//摩擦轮
   pinMode(13,OUTPUT);//摩擦轮控制2
   //50~150 舵机角度 50竖直 135水平
   item=135;
+  digitalWrite(10,HIGH);
   servo_9.write(item);//初始化防御位置
-  servo_10.write(180);
+  servo_8.write(180);
   digitalWrite(11,LOW);
   // digitalWrite(13,LOW);
   digitalWrite(4,LOW);
@@ -176,11 +177,11 @@ void loop() {
     // digitalWrite(13,HIGH);
     delay(1000);
     // 90-180
-    servo_10.write(100);
+    servo_8.write(100);
     delay(1000);
     digitalWrite(11,LOW);
     // digitalWrite(13,LOW);
-    servo_10.write(180);
+    servo_8.write(180);
   }
 }
 /*
