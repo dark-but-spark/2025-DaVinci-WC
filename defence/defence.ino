@@ -19,28 +19,28 @@ double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~1
 */
 
 }
-void up(int x)//向前单位
+void up(int x)//向前单位 255最快
 {
   digitalWrite(4,LOW);
   analogWrite(5,x);
   digitalWrite(7,LOW);
   analogWrite(6,x);
 }
-void down(int x)//向后单位
+void down(int x)//向后单位 0最快
 {
   digitalWrite(4,HIGH);
   analogWrite(5,x);
   digitalWrite(7,HIGH);
   analogWrite(6,x);
 }
-void left(int x)//左转 a后b前
+void left(int x)//左转 a后b前 255最快
 {
   digitalWrite(4,HIGH);
   analogWrite(5,255-x);
   digitalWrite(7,LOW);
   analogWrite(6,x);
 }
-void right(int x)//右转 a前b后
+void right(int x)//右转 a前b后 255最快
 {
   digitalWrite(4,LOW);
   analogWrite(5,x);
@@ -83,10 +83,10 @@ void setup() {
   digitalWrite(7,LOW);
   analogWrite(6, 0);
   Serial.println("初始条件完成");
-  up(100);delay(1000);
-  right(100);delay(1000);
-  down(100);delay(2000);
-  left(100);delay(1000);
+  up(255);delay(1000);
+  right(255);delay(1000);
+  down(0);delay(2000);
+  left(255);delay(1000);
 }
 
 void loop() {
@@ -110,17 +110,33 @@ void loop() {
   digitalWrite(7,LOW);
   analogWrite(6, 0);
   // double A=0,B=0;
-  if(ps2x.Analog(PSS_LY)>130 && abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
+  if (ps2x.Button(PSAB_PAD_UP))
+  {
+    up(255);
+  }
+  else if (ps2x.Button(PSAB_PAD_DOWN))
+  {
+    down(0);
+  }
+  else if (ps2x.Button(PSAB_PAD_RIGHT))
+  {
+    right(255);
+  }
+  else if (ps2x.Button(PSAB_PAD_LEFT))
+  {
+    left(255);
+  }
+  else if(ps2x.Analog(PSS_LY)>130 && abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
   {
     // A+=move_f(ps2x.Analog(PSS_LY)-128);
     // B+=move_f(ps2x.Analog(PSS_LY)-128);
-    down(map(ps2x.Analog(PSS_LY), 130, 255, 0, 255));
+    down(map(ps2x.Analog(PSS_LY), 0, 125, 0, 255));
   }
   else if(ps2x.Analog(PSS_LY)<125&& abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
   {
     // A-=move_f(128-ps2x.Analog(PSS_LY));
     // B-=move_f(128-ps2x.Analog(PSS_LY));
-    up(map(ps2x.Analog(PSS_LY), 0, 125, 0, 255));
+    up(map(ps2x.Analog(PSS_LY), 130, 255, 0, 255));
   }
   else if(ps2x.Analog(PSS_LX)>130)
   {
@@ -132,7 +148,7 @@ void loop() {
   {
     // A+=move_f(128-ps2x.Analog(PSS_LX));
     // B-=move_f(128-ps2x.Analog(PSS_LX));
-    left(map(ps2x.Analog(PSS_LX), 0, 125, 0, 255));
+    left(255-map(ps2x.Analog(PSS_LX), 0, 125, 0, 255));
   }
   // A=move_f(ps2x.Analog(PSS_LY)-128)+move_f(ps2x.Analog(PSS_LX)-128);
   // B=move_f(ps2x.Analog(PSS_LY)-128)-move_f(ps2x.Analog(PSS_LX)-128);
