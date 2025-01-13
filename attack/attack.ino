@@ -19,6 +19,13 @@ double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~1
 */
 
 }
+void stop()
+{
+    digitalWrite(4,LOW);
+  analogWrite(5,0);
+  digitalWrite(7,LOW);
+  analogWrite(6,0);
+}
 void up(int x)//向前单位 255最快
 {
   digitalWrite(4,LOW);
@@ -50,15 +57,26 @@ void right(int x)//右转 a前b后 255最快
 
 void goback()//炮台向后
 {
-  item=item+5<150? item+5:150;
+  item=item+1<150? item+1:150;
   servo_9.write(item);
 }
 void gofront()//炮台向前
 {
-  item=item-5>50? item-5:50;
+  item=item-1>50? item-1:50;
   servo_9.write(item);
 }
-void shoot();
+void shoot()// attack attack attack!!!
+{
+    digitalWrite(11,HIGH);
+    // digitalWrite(13,HIGH);
+    delay(1000);
+    // 90-180
+    servo_8.write(100);
+    delay(1000);
+    digitalWrite(11,LOW);
+    // digitalWrite(13,LOW);
+    servo_8.write(180);
+}
 void motor1(int x);//单独控制电机模块
 void motor2(int x);
 void motor3(int x);
@@ -79,7 +97,7 @@ void setup() {
   pinMode(11,OUTPUT);//摩擦轮
   pinMode(13,OUTPUT);//摩擦轮控制2
   //50~150 舵机角度 50竖直 135水平
-  item=135;
+  item=100;
   digitalWrite(10,HIGH);
   servo_9.write(item);//初始化防御位置
   servo_8.write(180);
@@ -90,10 +108,18 @@ void setup() {
   digitalWrite(7,LOW);
   analogWrite(6, 0);
   Serial.println("初始条件完成");
-  up(255);delay(1000);
-  right(255);delay(1000);
-  down(0);delay(2000);
-  left(255);delay(1000);
+  //-------------------------30s程序
+  up(255);delay(100);
+  left(255);delay(300);
+  up(255);delay(3500);
+  // right(255);delay(650);
+  // up(255);delay(2200);
+  // left(255);delay(600);
+  // up(255);delay(3500);
+  // right(255);delay(100);
+  stop();
+//  down(0);delay(2000);
+//  left(255);delay(1000);
 }
 
 void loop() {
@@ -173,15 +199,7 @@ void loop() {
     goback();
   }
   if (ps2x.Button(PSB_R1)) {
-    digitalWrite(11,HIGH);
-    // digitalWrite(13,HIGH);
-    delay(1000);
-    // 90-180
-    servo_8.write(100);
-    delay(1000);
-    digitalWrite(11,LOW);
-    // digitalWrite(13,LOW);
-    servo_8.write(180);
+    shoot();
   }
 }
 /*
