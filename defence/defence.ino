@@ -50,12 +50,12 @@ void right(int x)//右转 a前b后 255最快
 
 void gofront()//炮台向前
 {
-  item=item+5<150? item+5:150;
+  item=item+5<110? item+5:110;
   servo_9.write(item);
 }
 void goback()//炮台向后
 {
-  item=item-5>50? item-5:50;
+  item=item-5>0? item-5:0;
   servo_9.write(item);
 }
 void shoot();
@@ -76,17 +76,19 @@ void setup() {
   servo_9.attach(9);//上下移动的舵机
  // pinMode(10,OUTPUT);//激光灯 测试用
   //50~150 舵机角度 50竖直 135水平
-  item=135;
+  item=0;
   servo_9.write(item);//初始化防御位置
     digitalWrite(4,LOW);
   analogWrite(5, 0);
   digitalWrite(7,LOW);
   analogWrite(6, 0);
   Serial.println("初始条件完成");
-  up(255);delay(1000);
-  right(255);delay(1000);
-  down(0);delay(2000);
-  left(255);delay(1000);
+  item=110;
+  servo_9.write(item);
+  up(255);delay(100);
+  left(255);delay(425);
+  up(255);delay(1500);
+  
 }
 
 void loop() {
