@@ -19,6 +19,29 @@ double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~1
 */
 
 }
+void move(int A,int B)//移动上下左右总和
+{
+  if(A>=0)
+  {
+    digitalWrite(4,HIGH);
+    analogWrite(5,255-A);
+  }
+  else
+  {
+    digitalWrite(4,LOW);
+    analogWrite(5,-A);
+  }
+  if(A>=0)
+  {
+    digitalWrite(7,HIGH);
+    analogWrite(6, 255-B);
+  }
+  else
+  {
+    digitalWrite(7,LOW);
+    analogWrite(6,-B);
+  }
+}
 void stop()
 {
     digitalWrite(4,LOW);
@@ -109,9 +132,9 @@ void setup() {
   analogWrite(6, 0);
   Serial.println("初始条件完成");
   //-------------------------30s程序
-  up(255);delay(100);
-  left(255);delay(300);
-  up(255);delay(3500);
+  // up(255);delay(100);
+  // left(255);delay(370);
+  // up(255);delay(2900);
   // right(255);delay(650);
   // up(255);delay(2200);
   // left(255);delay(600);
@@ -142,7 +165,7 @@ void loop() {
   analogWrite(5, 0);
   digitalWrite(7,LOW);
   analogWrite(6, 0);
-  // double A=0,B=0;
+  double A=0,B=0;
   if (ps2x.Button(PSAB_PAD_UP))
   {
     up(255);
@@ -159,29 +182,29 @@ void loop() {
   {
     left(255);
   }
-  else if(ps2x.Analog(PSS_LY)>130 && abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
+  else if(ps2x.Analog(PSS_LY)>130)
   {
-    // A+=move_f(ps2x.Analog(PSS_LY)-128);
-    // B+=move_f(ps2x.Analog(PSS_LY)-128);
-    down(map(ps2x.Analog(PSS_LY), 0, 125, 0, 255));
+    A+=move_f(ps2x.Analog(PSS_LY)-128);
+    B+=move_f(ps2x.Analog(PSS_LY)-128);
+    // down(map(ps2x.Analog(PSS_LY), 0, 125, 0, 255));
   }
-  else if(ps2x.Analog(PSS_LY)<125&& abs(ps2x.Analog(PSS_LY)-128)>=abs(ps2x.Analog(PSS_LX)-128))
+  else if(ps2x.Analog(PSS_LY)<125)
   {
-    // A-=move_f(128-ps2x.Analog(PSS_LY));
-    // B-=move_f(128-ps2x.Analog(PSS_LY));
-    up(map(ps2x.Analog(PSS_LY), 130, 255, 0, 255));
+    A-=move_f(128-ps2x.Analog(PSS_LY));
+    B-=move_f(128-ps2x.Analog(PSS_LY));
+    // up(map(ps2x.Analog(PSS_LY), 130, 255, 0, 255));
   }
-  else if(ps2x.Analog(PSS_LX)>130)
+  if(ps2x.Analog(PSS_LX)>130)
   {
-    // A-=move_f(ps2x.Analog(PSS_LX)-128);
-    // B+=move_f(ps2x.Analog(PSS_LX)-128);
-      right(map(ps2x.Analog(PSS_LX), 130, 255, 0, 255));
+    A-=move_f(ps2x.Analog(PSS_LX)-128);
+    B+=move_f(ps2x.Analog(PSS_LX)-128);
+      // right(map(ps2x.Analog(PSS_LX), 130, 255, 0, 255));
   }
   else if(ps2x.Analog(PSS_LX)<125)
   {
-    // A+=move_f(128-ps2x.Analog(PSS_LX));
-    // B-=move_f(128-ps2x.Analog(PSS_LX));
-    left(255-map(ps2x.Analog(PSS_LX), 0, 125, 0, 255));
+    A+=move_f(128-ps2x.Analog(PSS_LX));
+    B-=move_f(128-ps2x.Analog(PSS_LX));
+    // left(255-map(ps2x.Analog(PSS_LX), 0, 125, 0, 255));
   }
   // A=move_f(ps2x.Analog(PSS_LY)-128)+move_f(ps2x.Analog(PSS_LX)-128);
   // B=move_f(ps2x.Analog(PSS_LY)-128)-move_f(ps2x.Analog(PSS_LX)-128);
@@ -203,27 +226,5 @@ void loop() {
   }
 }
 /*
-void move(int A,int B)//移动上下左右总和
-{
-  if(A>=0)
-  {
-    digitalWrite(4,HIGH);
-    analogWrite(5,A);
-  }
-  else
-  {
-    digitalWrite(4,LOW);
-    analogWrite(5,-A);
-  }
-  if(A>=0)
-  {
-    digitalWrite(7,HIGH);
-    analogWrite(6,B);
-  }
-  else
-  {
-    digitalWrite(7,LOW);
-    analogWrite(6,-B);
-  }
-}
+
 */
