@@ -6,19 +6,19 @@ PS2X ps2x;
 Servo servo_9,servo_8;
 volatile int item;
 
-double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127的数字
-{
-  return map(x, 0, 127, 0, 255);
-  if(x<10) return 0;
-  else return (x-10)*127.0/117.0;
-/*
-  if(x<10) return 0;
-  if(x<20) return x-10;
-  if(x>=20&&x<=80) return (x-20)*5.0/6.0+10;//(20,10) (80,60)
-  if(x>80) return (x-80)*40.0/47.0+60;//(80,60) (127,100)
-*/
+// double move_f(int x)//手柄的输入转换曲线（也可以是直线）x是0~127的数字
+// {
+//   return map(x, 0, 127, 0, 255);
+//   if(x<10) return 0;
+//   else return (x-10)*127.0/117.0;
+// /*
+//   if(x<10) return 0;
+//   if(x<20) return x-10;
+//   if(x>=20&&x<=80) return (x-20)*5.0/6.0+10;//(20,10) (80,60)
+//   if(x>80) return (x-80)*40.0/47.0+60;//(80,60) (127,100)
+// */
 
-}
+// }
 void stop()
 {
     digitalWrite(4,LOW);
